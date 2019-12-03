@@ -73,17 +73,7 @@ fun <T> String.httpPost(
 fun ArrayMap<String, String>.createFormBody(): RequestBody {
     val formBody = FormBody.Builder()
     for ((key, value) in this) {
-        if (value.startsWith("[")) {
-            //数组参数
-            val values = value.substring(1, value.length - 1).split(",")
-            values.forEach {
-                if (it.isNotEmpty()) {
-                    formBody.add(key, it)
-                }
-            }
-        } else {
-            formBody.add(key, value)
-        }
+        formBody.add(key, value)
     }
     return formBody.build()
 }
