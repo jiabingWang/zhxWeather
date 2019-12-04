@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ZhxWeather</string>
+    <string-array name="share_type">
+        <item>纯文本</item>
+        <item>仿锤子便签</item>
+    </string-array>
 </resources>
