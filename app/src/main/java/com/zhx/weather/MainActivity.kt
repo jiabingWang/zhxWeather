@@ -37,7 +37,7 @@ class MainActivity : BaseActivity() {
     private fun setFragment(){
         supportFragmentManager.beginTransaction().apply {
             if (mWeatherFg == null){
-                mWeatherFg = WeatherFragment.newInstance("余江")
+                mWeatherFg = WeatherFragment.newInstance()
                 add(R.id.fg_weather,mWeatherFg!!)
             }
             mCurrentFg = mWeatherFg

@@ -1,9 +1,12 @@
 package com.zhx.weather.util
 
+import android.content.Context
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -19,17 +22,17 @@ import org.jetbrains.anko.dip
 /** Log */
 fun Any.logD(msg: String?) {
     if (IS_DEBUG) {
-        Log.d("jiaBingD", "msg")
+        Log.d("jiaBingD", msg)
     }
 }
 fun Any.logE(msg: String?) {
     if (IS_DEBUG) {
-        Log.e("jiaBingE", "msg")
+        Log.e("jiaBingE", msg)
     }
 }
 fun Any.logI(msg: String?) {
     if (IS_DEBUG) {
-        Log.i("jiaBingI", "msg")
+        Log.i("jiaBingI", msg)
     }
 }
 /** 拓展方法 */
@@ -158,6 +161,38 @@ infix fun ImageView.setCircleImageFromR(resId: Int?) {
             )
             .into(this)
 
+    }
+}
+fun Context.myToast(s: String?) {
+    s?.let {
+        val view = Toast.makeText(this, "", Toast.LENGTH_SHORT).view
+        val mToast = Toast(this)
+        mToast.view = view
+        mToast.setText(it)
+        mToast.duration = Toast.LENGTH_SHORT
+        mToast.show()
+    }
+}
+
+fun Fragment.myToast(s: String?) {
+    s?.let {
+        val view = Toast.makeText(this.context, "", Toast.LENGTH_SHORT).view
+        val mToast = Toast(this.activity)
+        mToast.view = view
+        mToast.setText(it)
+        mToast.duration = Toast.LENGTH_SHORT
+        mToast.show()
+    }
+}
+
+fun Context.myShortToast(s: String?) {
+    s?.let {
+        val view = Toast.makeText(this, "", Toast.LENGTH_SHORT).view
+        val mToast = Toast(this)
+        mToast.view = view
+        mToast.setText(it)
+        mToast.duration = Toast.LENGTH_SHORT
+        mToast.show()
     }
 }
 

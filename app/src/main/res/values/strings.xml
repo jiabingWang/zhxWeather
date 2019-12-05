@@ -4,4 +4,7 @@
         <item>纯文本</item>
         <item>仿锤子便签</item>
     </string-array>
+    <string name="air_pressure">气压</string>
+    <string name="humidity">湿度</string>
+    <string name="wind">风力</string>
 </resources>

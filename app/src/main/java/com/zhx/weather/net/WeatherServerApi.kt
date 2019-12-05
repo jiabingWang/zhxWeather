@@ -2,6 +2,8 @@ package com.zhx.weather.net
 
 import android.util.ArrayMap
 import com.zhx.weather.WeatherApp
+import com.zhx.weather.bean.ForecastWeatherBean
+import com.zhx.weather.bean.NowWeatherBean
 import org.jetbrains.anko.runOnUiThread
 
 /**
@@ -22,11 +24,28 @@ const val BASE_URL = "https://free-api.heweather.net/s6/"
 /**
  * 获取当前城市天气
  */
-fun <T> String.getWeatherNow(cls: Class<T>,successCallback: (T) -> Unit,failCallback: (Throwable) -> Unit) {
+fun  String.getWeatherNow(successCallback: (NowWeatherBean) -> Unit,failCallback: (Throwable) -> Unit) {
     val params = ArrayMap<String, String>()
     params["location"] = this
     params["key"] = KEY
-    "${BASE_URL}weather/now?".httpPost(params, cls, success = {
+    "${BASE_URL}weather/now?".httpPost(params, NowWeatherBean::class.java, success = {
+        WeatherApp.app.runOnUiThread {
+            successCallback.invoke(it)
+        }
+    }, fail = {
+        WeatherApp.app.runOnUiThread {
+            failCallback.invoke(it)
+        }
+    })
+}
+/**
+ * 获取3天的天气预报
+ */
+fun String.getWeatherForecast(successCallback: (ForecastWeatherBean) -> Unit, failCallback: (Throwable) -> Unit){
+    val params = ArrayMap<String, String>()
+    params["location"] = this
+    params["key"] = KEY
+    "${BASE_URL}weather/forecast?".httpPost(params, ForecastWeatherBean::class.java, success = {
         WeatherApp.app.runOnUiThread {
             successCallback.invoke(it)
         }

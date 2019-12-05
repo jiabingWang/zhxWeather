@@ -2,6 +2,7 @@ package com.zhx.weather.net
 
 import android.util.ArrayMap
 import com.google.gson.Gson
+import com.zhx.weather.util.logD
 import com.zhx.weather.util.logE
 import okhttp3.*
 import java.io.IOException
@@ -39,6 +40,7 @@ fun <T> Request.mallHttp(
             override fun onResponse(p0: Call, p1: Response) {
                 try {
                     val bodyStr = p1.body()?.string()
+                    logD("httpGetError----->请求：${this@mallHttp}\n----->成功：$bodyStr ")
                     if (p1.code() in 200..299) {
                         success.invoke(gson.fromJson(bodyStr, cls))
                     } else {

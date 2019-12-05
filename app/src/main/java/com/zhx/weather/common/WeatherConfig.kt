@@ -1,5 +1,6 @@
 package com.zhx.weather.common
 
+import android.util.SparseArray
 import com.zhx.weather.BuildConfig
 
 /**
@@ -13,3 +14,7 @@ import com.zhx.weather.BuildConfig
  * 是否是debug模式
  */
 var IS_DEBUG = BuildConfig.DEBUG
+
+//messageBus
+//改变天气type
+const val MSG_WEATHER_TYPE_CHANGE = 0x0010
