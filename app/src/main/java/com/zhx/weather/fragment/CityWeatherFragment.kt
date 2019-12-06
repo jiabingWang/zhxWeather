@@ -1,14 +1,19 @@
 package com.zhx.weather.fragment
 
 import android.os.Bundle
-import android.os.Message
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import com.zhx.weather.R
+import com.zhx.weather.adapter.ForecastAdapter
+import com.zhx.weather.adapter.LifestyleAdapter
 import com.zhx.weather.base.BaseFragment
 import com.zhx.weather.base.MessageBus
 import com.zhx.weather.bean.DynamicWeatherBean
+import com.zhx.weather.bean.ForecastWeatherBean
+import com.zhx.weather.bean.LifestyBean
 import com.zhx.weather.bean.NowWeatherBean
 import com.zhx.weather.common.MSG_WEATHER_TYPE_CHANGE
+import com.zhx.weather.net.getLifestyle
 import com.zhx.weather.net.getWeatherForecast
 import com.zhx.weather.net.getWeatherNow
 import com.zhx.weather.util.myToast
@@ -30,7 +35,12 @@ class CityWeatherFragment(private val cityName: String) :
      * 当前城市的天气状况Code
      */
     private var mCurrentDynamicWeatherBean: DynamicWeatherBean? = null
-
+    private lateinit var mForecastAdapter: ForecastAdapter
+    private var mForecastData =
+        mutableListOf<ForecastWeatherBean.HeWeather6Bean.DailyForecastBean>()
+    private lateinit var mLifestyleAdapter : LifestyleAdapter
+    private var mLifestyleData =
+        mutableListOf<LifestyBean.HeWeather6Bean.LifestyleBean>()
     fun getTitle(): String? {
         return cityName
     }
@@ -39,10 +49,12 @@ class CityWeatherFragment(private val cityName: String) :
 
     override fun initData() {
         getNowWeather()
+        getLifestyle()
     }
 
     override fun initUi(savedInstanceState: Bundle?) {
-
+        initForecastRv()
+        initLifestyleRv()
     }
 
     override fun getClickView(): List<View?>? {
@@ -55,13 +67,14 @@ class CityWeatherFragment(private val cityName: String) :
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser){
+        if (isVisibleToUser) {
             //发送消息，通知需要显示的天气动画
             mCurrentDynamicWeatherBean?.let {
-                MessageBus.post(MSG_WEATHER_TYPE_CHANGE,it)
+                MessageBus.post(MSG_WEATHER_TYPE_CHANGE, it)
             }
         }
     }
+
     override fun onResume() {
         super.onResume()
 
@@ -77,26 +90,48 @@ class CityWeatherFragment(private val cityName: String) :
     }
 
     private fun getNowWeather() {
+        //获取当前实时天气
         cityName.getWeatherNow(successCallback = { now ->
             showWeatherInfoNow(now.heWeather6[0].now)
-            cityName.getWeatherForecast(successCallback = { forecast ->
-                val today = forecast.heWeather6[0].daily_forecast[0]
-                mCurrentDynamicWeatherBean = DynamicWeatherBean(
-                    now.heWeather6[0].now.cond_code.toInt(),
-                    today.sr,
-                    today.ss,
-                    today.mr,
-                    today.ms
-                )
-            }, failCallback = {
-                myToast("出现错误${it.message}")
-            })
+            //获取3天内预报
+            getForecastWeather(now.heWeather6[0].now.cond_code)
         }, failCallback = {
             myToast("出现错误${it.message}")
         })
 
     }
+    private fun getForecastWeather(condCode: String) {
+        cityName.getWeatherForecast(successCallback = { forecast ->
+            val today = forecast.heWeather6[0].daily_forecast[0]
+            mCurrentDynamicWeatherBean = DynamicWeatherBean(
+                condCode.toInt(),
+                today.sr,
+                today.ss,
+                today.mr,
+                today.ms
+            )
+            MessageBus.post(MSG_WEATHER_TYPE_CHANGE, mCurrentDynamicWeatherBean)
+            mForecastAdapter.data.clear()
+            for (item in forecast.heWeather6[0].daily_forecast) {
+                mForecastAdapter.data.add(item)
+            }
+            mForecastAdapter.notifyDataSetChanged()
+        }, failCallback = {
+            myToast("出现错误${it.message}")
+        })
+    }
 
+    private fun getLifestyle(){
+        cityName.getLifestyle(successCallback = {lifestyle ->
+            mLifestyleAdapter.data.clear()
+            for (item in lifestyle.heWeather6[0].lifestyle){
+                mLifestyleAdapter.data.add(item)
+            }
+            mLifestyleAdapter.notifyDataSetChanged()
+        },failCallback = {
+            myToast("出现错误${it.message}")
+        })
+    }
     private fun showWeatherInfoNow(now: NowWeatherBean.HeWeather6Bean.NowBean) {
         //当前温度
         tv_current_tmp textFrom "${now.tmp}°"
@@ -106,5 +141,16 @@ class CityWeatherFragment(private val cityName: String) :
         tv_pres_value textFrom now.pres
         //风力
         tv_wind_sc_value textFrom "${now.wind_sc}级"
+    }
+
+    private fun initForecastRv() {
+        mForecastAdapter = ForecastAdapter(activity!!, mForecastData)
+        rv_forecast.layoutManager =GridLayoutManager(activity!!,3)
+        rv_forecast.adapter = mForecastAdapter
+    }
+    private fun initLifestyleRv(){
+        mLifestyleAdapter = LifestyleAdapter(activity!!,mLifestyleData)
+        rv_lifestyle.layoutManager =GridLayoutManager(activity!!,4)
+        rv_lifestyle.adapter = mLifestyleAdapter
     }
 }

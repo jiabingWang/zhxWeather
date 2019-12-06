@@ -36,7 +36,6 @@ class WeatherFragment : BaseFragment() {
 
     override fun initUi(savedInstanceState: Bundle?) {
         initVP()
-        showDynamicWeather(100)
     }
 
     override fun getClickView(): List<View?>? {
@@ -66,8 +65,8 @@ class WeatherFragment : BaseFragment() {
         super.onMessageBus(code, event)
         if (code == MSG_WEATHER_TYPE_CHANGE){
             event?.let {
-                it as DynamicWeatherBean
-                showDynamicWeather(it.weatherCode)
+
+                showDynamicWeather(it as DynamicWeatherBean)
             }
         }
     }
@@ -80,6 +79,7 @@ class WeatherFragment : BaseFragment() {
         vp_city_weather.offscreenPageLimit = mCityTitleList.size
         vp_city_weather.adapter = mVpAdapter
         vp_indicator.setViewPager(vp_city_weather)
+        vp_city_weather.currentItem = 0
     }
 
     internal inner class CityWeatherViewPagerAdapter(
@@ -106,18 +106,17 @@ class WeatherFragment : BaseFragment() {
 
     /**
      * 显示动态天气
-     * @param condCode 和风天气返回的code
      * tip ：接口返回字段为condCode，代码中命名为weatherCode。代表的意思都是天气状况代码
      */
-    private fun showDynamicWeather(condCode: Int) {
+    private fun showDynamicWeather(data: DynamicWeatherBean) {
 
         val info = ShortWeatherInfo()
-        info.sunrise = "06:00"
-        info.sunset = "18:00"
-        info.moonrise = "18:00"
-        info.moonset = "06:00"
+        info.sunrise = data.sunrise
+        info.sunset = data.sunset
+        info.moonrise = data.moonrise
+        info.moonset =data.moonset
         val type: BaseWeatherType
-        when (weatherCodeToWeatherType(condCode)) {
+        when (weatherCodeToWeatherType(data.weatherCode)) {
             WeatherType.TYPE_SUNNY -> {
                 val sunnyType = SunnyType(activity, info)
                 type = sunnyType

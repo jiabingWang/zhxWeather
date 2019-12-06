@@ -1,6 +1,9 @@
 package com.zhx.weather
 
 import android.app.Application
+import android.graphics.Color
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
+import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import com.zhx.weather.net.initOkHttp
 
 /**
@@ -19,5 +22,12 @@ class WeatherApp :Application() {
         app = this
         initOkHttp()
 //        DoraemonKit.install(this)
+        //全局下拉格式
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, _ ->
+            ClassicsHeader(context).apply {
+                setTextSizeTitle(14f)
+                setAccentColor(Color.parseColor("#999999"))
+            }
+        }
     }
 }

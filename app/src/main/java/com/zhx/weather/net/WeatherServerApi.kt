@@ -3,6 +3,7 @@ package com.zhx.weather.net
 import android.util.ArrayMap
 import com.zhx.weather.WeatherApp
 import com.zhx.weather.bean.ForecastWeatherBean
+import com.zhx.weather.bean.LifestyBean
 import com.zhx.weather.bean.NowWeatherBean
 import org.jetbrains.anko.runOnUiThread
 
@@ -46,6 +47,23 @@ fun String.getWeatherForecast(successCallback: (ForecastWeatherBean) -> Unit, fa
     params["location"] = this
     params["key"] = KEY
     "${BASE_URL}weather/forecast?".httpPost(params, ForecastWeatherBean::class.java, success = {
+        WeatherApp.app.runOnUiThread {
+            successCallback.invoke(it)
+        }
+    }, fail = {
+        WeatherApp.app.runOnUiThread {
+            failCallback.invoke(it)
+        }
+    })
+}
+/**
+ * 获取当前生活指数
+ */
+fun String.getLifestyle(successCallback: (LifestyBean) -> Unit, failCallback: (Throwable) -> Unit){
+    val params = ArrayMap<String, String>()
+    params["location"] = this
+    params["key"] = KEY
+    "${BASE_URL}weather/lifestyle?".httpPost(params, LifestyBean::class.java, success = {
         WeatherApp.app.runOnUiThread {
             successCallback.invoke(it)
         }
