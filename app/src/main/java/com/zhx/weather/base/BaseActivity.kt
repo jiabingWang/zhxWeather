@@ -3,11 +3,13 @@ package com.zhx.weather.base
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.zhx.weather.listener.MessageBusInterface
 import com.zhx.weather.listener.NormalInterface
 import com.zhx.weather.util.ScreenAdaptation
+
 
 /**
  * 描述：Activity基类
@@ -19,7 +21,7 @@ import com.zhx.weather.util.ScreenAdaptation
  * 6.初始化UI
  * 7.点击事件（需要先获取需要点击的View）
  */
-abstract class BaseActivity: AppCompatActivity(), MessageBusInterface, NormalInterface {
+abstract class BaseActivity : AppCompatActivity(), MessageBusInterface, NormalInterface {
 
     /**动态权限请求码*/
     private val needPermissionCode = 1024
@@ -27,12 +29,14 @@ abstract class BaseActivity: AppCompatActivity(), MessageBusInterface, NormalInt
      * 动态权限的回调，是否有此权限
      * 动态权限的回调，是否勾选了不再提示
      */
-    private var needPermissionCall: ((granted: Boolean,checked: Boolean) -> Unit)? = null
+    private var needPermissionCall: ((granted: Boolean, checked: Boolean) -> Unit)? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         //开启屏幕适配
         ScreenAdaptation.setCustomDensity(this, application)
         super.onCreate(savedInstanceState)
         setContentView(getLayoutResOrView())
+        setTranslucentStatus()
         //消息总线注册
         MessageBus.register(this)
         initUi(savedInstanceState)
@@ -43,14 +47,16 @@ abstract class BaseActivity: AppCompatActivity(), MessageBusInterface, NormalInt
 
         initData()
     }
+
     override fun onClick(v: View?) {
         v?.let {
             onSingleClick(it)
         }
     }
+
     override fun getPermission(
         permission: MutableList<String>,
-        needPermissionCall: (granted: Boolean,checked :Boolean) -> Unit
+        needPermissionCall: (granted: Boolean, checked: Boolean) -> Unit
     ) {
         var isNeedRequest = false
         val list = mutableListOf<String>()
@@ -65,12 +71,13 @@ abstract class BaseActivity: AppCompatActivity(), MessageBusInterface, NormalInt
             if (list.isNotEmpty()) {
                 ActivityCompat.requestPermissions(this, list.toTypedArray(), needPermissionCode)
             } else {
-                needPermissionCall.invoke(true,false)
+                needPermissionCall.invoke(true, false)
             }
         } else {
-            needPermissionCall.invoke(true,false)
+            needPermissionCall.invoke(true, false)
         }
     }
+
     /**
      * 处理请求的权限结果
      */
@@ -83,23 +90,29 @@ abstract class BaseActivity: AppCompatActivity(), MessageBusInterface, NormalInt
         if (requestCode == needPermissionCode) {
             var isGetAllPermission = true
             var checked = false
-            for (i in 0 until grantResults.size){
+            for (i in 0 until grantResults.size) {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                     isGetAllPermission = false
-                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this,permissions[i])){
-                        checked =true
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                            this,
+                            permissions[i]
+                        )
+                    ) {
+                        checked = true
                     }
                 }
             }
-            needPermissionCall?.invoke(isGetAllPermission,checked)
+            needPermissionCall?.invoke(isGetAllPermission, checked)
         }
     }
+
     override fun onResume() {
         //是否开启屏幕适配,横竖屏切换，会导致之前设置失效，这里重新设置
-         ScreenAdaptation.setCustomDensity(this, application)
+        ScreenAdaptation.setCustomDensity(this, application)
         super.onResume()
 //        MobclickAgent.onResume(this)
     }
+
     override fun onPause() {
         super.onPause()
 //        MobclickAgent.onPause(this)
@@ -109,5 +122,15 @@ abstract class BaseActivity: AppCompatActivity(), MessageBusInterface, NormalInt
         //消息总线解绑
         MessageBus.unRegister(this)
         super.onDestroy()
+    }
+
+    /**
+     * 沉浸式状态栏
+     */
+    private fun setTranslucentStatus() {
+        val lp = window.attributes
+        val flagTranslucentStatus = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+        lp.flags = flagTranslucentStatus
+        window.attributes = lp
     }
 }
