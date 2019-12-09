@@ -7,6 +7,15 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
+
+    signingConfigs {
+        release{
+            keyAlias 'zhx'
+            keyPassword 'zhx123456'
+            storePassword 'zhx123456'
+            storeFile file('release/zhx')
+        }
+    }
     defaultConfig {
         applicationId "com.zhx.weather"
         minSdkVersion 21
@@ -19,6 +28,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -47,6 +62,8 @@ dependencies {
     //SmartRefreshLayout
     implementation "com.scwang.smartrefresh:SmartRefreshLayout:1.1.0"
     implementation "com.scwang.smartrefresh:SmartRefreshHeader:1.1.0"
+    //高德定位
+    implementation 'com.amap.api:location:4.5.0'
     //友盟统计
     implementation  'com.umeng.umsdk:analytics:8.0.0'
     implementation  'com.umeng.umsdk:common:2.0.0'

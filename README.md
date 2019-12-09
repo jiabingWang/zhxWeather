@@ -1,4 +1,11 @@
 # zhxWeather
+* # 签名文件信息
+* ### 目录：app/release/zhx
+* ### 别名：zhx
+* ### 密码zhx123456
+* ####  MD5: 76:A0:02:36:CE:B2:30:65:4A:09:AB:81:AA:06:1A:4B
+* ####  SHA1: 39:97:C1:7C:44:AE:90:EB:86:13:8D:4C:B3:90:C4:D4:37:54:D8:CB
+* ####  SHA256: B1:60:DC:AA:4C:A4:E7:81:FD:17:67:77:9A:2E:A3:C3:C4:50:5F:EF:B1:E3:DF:12:BC:E2:1F:CE:A5:4E:42:1E
 zhxWeather
 * # 目录结构
 * ## activity 项目用到的Activity

@@ -3,6 +3,8 @@ package com.zhx.weather.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import com.scwang.smartrefresh.layout.api.RefreshLayout
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.zhx.weather.R
 import com.zhx.weather.adapter.ForecastAdapter
 import com.zhx.weather.adapter.LifestyleAdapter
@@ -55,6 +57,7 @@ class CityWeatherFragment(private val cityName: String) :
     override fun initUi(savedInstanceState: Bundle?) {
         initForecastRv()
         initLifestyleRv()
+        initRefreshLayout()
     }
 
     override fun getClickView(): List<View?>? {
@@ -88,7 +91,13 @@ class CityWeatherFragment(private val cityName: String) :
     override fun onDestroy() {
         super.onDestroy()
     }
-
+    private fun initRefreshLayout() {
+        refreshLayout.setEnableRefresh(true)
+        refreshLayout.setEnableLoadMore(false)
+        refreshLayout.setOnRefreshListener{
+            initData()
+        }
+    }
     private fun getNowWeather() {
         //获取当前实时天气
         cityName.getWeatherNow(successCallback = { now ->
@@ -131,6 +140,7 @@ class CityWeatherFragment(private val cityName: String) :
         },failCallback = {
             myToast("出现错误${it.message}")
         })
+        refreshLayout.finishRefresh(1000)
     }
     private fun showWeatherInfoNow(now: NowWeatherBean.HeWeather6Bean.NowBean) {
         //当前温度

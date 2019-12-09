@@ -1,6 +1,5 @@
 package com.zhx.weather.common
 
-import android.util.SparseArray
 import com.zhx.weather.BuildConfig
 
 /**
@@ -18,3 +17,6 @@ var IS_DEBUG = BuildConfig.DEBUG
 //messageBus
 //改变天气type
 const val MSG_WEATHER_TYPE_CHANGE = 0x0010
+const val MSG_LOCATION= 0x0011
+/**高德Key*/
+const val GAODE_KEY ="1e3bcc75b901899c38bfba1ec4cc448a"
