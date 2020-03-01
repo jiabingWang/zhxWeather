@@ -1,6 +1,7 @@
 package com.zhx.weather.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.core.util.rangeTo
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -19,6 +20,7 @@ import com.zhx.weather.base.MessageBus
 import com.zhx.weather.bean.AddressBean
 import com.zhx.weather.common.MSG_REFRESH_ADDRESS
 import com.zhx.weather.manager.UserInfoManager
+import com.zhx.weather.util.logD
 import com.zhx.weather.util.spGet
 import com.zhx.weather.util.spSet
 import kotlinx.android.synthetic.main.activity_adress_manager.*
@@ -31,7 +33,9 @@ class AddressManagerActivity : BaseActivity(), OnAddressSelectedListener,
     private val mAddressData = mutableListOf<String>()
     private var mAddressDialog: BottomDialog? = null
     private val mAdapter = AddressAdapter(this@AddressManagerActivity, mAddressData) {
-
+        mAddressData.remove(it)
+        UserInfoManager.INSTANCE.setAddressList(mAddressData.toMutableSet())
+        refreshUi()
     }
 
     /**
@@ -46,8 +50,7 @@ class AddressManagerActivity : BaseActivity(), OnAddressSelectedListener,
                 mAddressData.add(item)
             }
 
-            mAdapter.setNewData(mAddressData)
-            mAdapter.notifyDataSetChanged()
+            refreshUi()
         }
 
     }
@@ -78,10 +81,14 @@ class AddressManagerActivity : BaseActivity(), OnAddressSelectedListener,
         } else {
             mAddressData.add(city)
             UserInfoManager.INSTANCE.setAddressList(mAddressData.toMutableSet())
-            mAdapter.setNewData(mAddressData)
-            mAdapter.notifyDataSetChanged()
+            refreshUi()
             MessageBus.post(MSG_REFRESH_ADDRESS,null)
         }
+    }
+
+    private fun refreshUi() {
+        mAdapter.setNewData(mAddressData)
+        mAdapter.notifyDataSetChanged()
     }
 
     private fun initAddressDialog() {
@@ -102,12 +109,17 @@ class AddressManagerActivity : BaseActivity(), OnAddressSelectedListener,
         county: County?,
         street: Street?
     ) {
+        Log.d("jiaBing","province${province?.name}--city${city?.name}--county${county?.name}")
         var address = ""
-        city?.let {
-            address = city.name
+        if(province?.name =="香港"||province?.name =="台湾"||province?.name =="澳门"||province?.name =="钓鱼岛"){
+            toast("该地区暂不支持")
+            mAddressDialog?.dismiss()
+            return
         }
-        county?.let {
-            address = county.name
+        if (province?.name =="北京"||province?.name =="上海"||province?.name =="天津"){
+            address = city!!.name
+        }else{
+            address = county!!.name
         }
         refreshAdapter(address)
         mAddressDialog?.dismiss()

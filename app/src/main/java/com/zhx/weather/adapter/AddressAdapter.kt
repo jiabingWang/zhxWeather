@@ -17,17 +17,22 @@ import com.zhx.weather.util.textFrom
  * 包名 com.zhx.weather.adapter
  * 描述：
  */
-class AddressAdapter(private val context: Context, var list: List<String>,private val onItemClick:(String)->Unit) :
+class AddressAdapter(private val context: Context, var list: List<String>,private val onDelectedItemClick:(String)->Unit) :
     BaseQuickAdapter<String,BaseViewHolder>(R.layout.item_address,list) {
     override fun convert(helper: BaseViewHolder?, item: String?) {
         val address =helper?.getView<TextView>(R.id.tv_address)!!
         val delecte =helper?.getView<TextView>(R.id.tv_delete)!!
         address textFrom item
+        if(item ==list[0]){
+            delecte.visibility = View.GONE
+        }else{
+            delecte.visibility = View.VISIBLE
+        }
         address?.setOnClickListener {
-            onItemClick.invoke(item!!)
+//            onItemClick.invoke(item!!)
         }
         delecte.setOnClickListener{
-
+            onDelectedItemClick.invoke(item!!)
         }
     }
 
