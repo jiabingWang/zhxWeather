@@ -1,6 +1,7 @@
 package com.zhx.weather
 
 import android.app.Application
+import cn.bmob.v3.Bmob
 import com.scwang.smartrefresh.header.BezierCircleHeader
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.zhx.weather.net.initOkHttp
@@ -25,5 +26,7 @@ class WeatherApp :Application() {
         SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, _ ->
             BezierCircleHeader(context)
         }
+        //第初始化bmob
+        Bmob.initialize(this, "com.zhx.weather")
     }
 }

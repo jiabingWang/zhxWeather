@@ -60,11 +60,7 @@ class CityWeatherFragment(private val cityName: String) :
         initRefreshLayout()
     }
 
-    override fun getClickView(): List<View?>? {
-        return listOf()
-    }
-
-    override fun onSingleClick(view: View) {
+    override fun initListener() {
 
     }
 

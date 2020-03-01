@@ -40,19 +40,13 @@ abstract class BaseActivity : AppCompatActivity(), MessageBusInterface, NormalIn
         //消息总线注册
         MessageBus.register(this)
         initUi(savedInstanceState)
-        //获取需要点击的View,进行点击事件注册
-        getClickView()?.forEach {
-            it?.setOnClickListener(this)
-        }
+
 
         initData()
+        initListener()
     }
 
-    override fun onClick(v: View?) {
-        v?.let {
-            onSingleClick(it)
-        }
-    }
+
 
     override fun getPermission(
         permission: MutableList<String>,

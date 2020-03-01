@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ZhxWeather</string>
+    <string name="app_name">来看天气</string>
     <string-array name="share_type">
         <item>纯文本</item>
         <item>仿锤子便签</item>
@@ -7,4 +7,6 @@
     <string name="air_pressure">气压</string>
     <string name="humidity">湿度</string>
     <string name="wind">风力</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
 </resources>

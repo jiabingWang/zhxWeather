@@ -1,6 +1,7 @@
 package com.zhx.weather.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
@@ -195,4 +196,94 @@ fun Context.myShortToast(s: String?) {
         mToast.show()
     }
 }
+/////////////////////////////////////////////////////////////////////////////////////////
+//** SharePreference持久化相关
+/////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * 描述：SharedPreferences 工具集合
+ */
+var SP_FILE_NAME = "cloud_config"
+
+fun Context.getSp(): SharedPreferences {
+    return getSharedPreferences(SP_FILE_NAME, Context.MODE_PRIVATE)
+}
+
+/**
+ * 数据保存再sp，只支持sp支持的基本类型
+ */
+fun Context.spSet(keyName: String, keyValue: Any?) {
+    if (keyValue == null) {
+        return
+    }
+    try {
+        getSp().edit().apply() {
+            when (keyValue) {
+                is String -> {
+                    putString(keyName, keyValue)
+                }
+                is Boolean -> {
+                    putBoolean(keyName, keyValue)
+                }
+                is Int -> {
+                    putInt(keyName, keyValue)
+                }
+                is Float -> {
+                    putFloat(keyName, keyValue)
+                }
+                is MutableSet<*> -> {
+                    putStringSet(keyName, keyValue as MutableSet<String>)
+                }
+                is Long -> {
+                    putLong(keyName, keyValue)
+                }
+                else -> {
+                    putString(keyName, "")
+                }
+            }
+        }.commit()
+    } catch (e: Throwable) {
+        e.printStackTrace()
+    }
+}
+
+fun Context.spRemove(keyName: String) {
+    getSp().edit().remove(keyName).commit()
+}
+
+/**
+ * 从sp获取数据
+ */
+fun <T> Context.spGet(keyName: String, default: T): T {
+    try {
+        var result: Any? = default
+        when (default) {
+            is String -> {
+                result = getSp().getString(keyName, default)
+            }
+            is Boolean -> {
+                result = getSp().getBoolean(keyName, default)
+            }
+            is Float -> {
+                result = getSp().getFloat(keyName, default)
+            }
+            is Int -> {
+                result = getSp().getInt(keyName, default)
+            }
+            is Long -> {
+                result = getSp().getLong(keyName, default)
+            }
+            is Set<*> -> {
+                result = getSp().getStringSet(keyName, default as MutableSet<String>)
+            }
+        }
+        return result as T
+    } catch (e: Throwable) {
+        return default
+    }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//** SharePreference持久化相关
+/////////////////////////////////////////////////////////////////////////////////////////

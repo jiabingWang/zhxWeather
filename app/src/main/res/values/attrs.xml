@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="flower_TimingButton">
+        <attr name="flower_tb_finishText" format="string" />
+        <attr name="flower_tb_totalTime" format="integer" />
+        <attr name="flower_tb_intervalTime" format="integer" />
+    </declare-styleable>
+</resources>

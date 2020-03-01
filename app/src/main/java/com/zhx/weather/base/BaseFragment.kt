@@ -33,9 +33,7 @@ abstract class BaseFragment :Fragment(), MessageBusInterface, NormalInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUi(savedInstanceState)
-        getClickView()?.forEach {
-            it?.setOnClickListener(this)
-        }
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -43,13 +41,9 @@ abstract class BaseFragment :Fragment(), MessageBusInterface, NormalInterface {
         initData()
         //消息总线注册
         MessageBus.register(this)
+        initListener()
     }
 
-    override fun onClick(v: View?) {
-        v?.let {
-            onSingleClick(it)
-        }
-    }
     override fun getPermission(
         permission: MutableList<String>,
         needPermissionCall: (granted: Boolean,checked :Boolean) -> Unit

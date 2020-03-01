@@ -6,7 +6,7 @@ import android.view.View
 /**
  * 描述：Activity,Fragment基类需要实现
  */
-interface NormalInterface : OnSingleClickListener {
+interface NormalInterface {
     /**
      * 获取布局资源
      */
@@ -19,10 +19,11 @@ interface NormalInterface : OnSingleClickListener {
      * 初始化view
      */
     fun initUi(savedInstanceState: Bundle?)
+
     /**
-     * 获取需要注册点击的view
+     * 初始化各个事件监听
      */
-    fun getClickView(): List<View?>?
+    fun initListener()
     /**
      * 获取用户的动态权限
      */

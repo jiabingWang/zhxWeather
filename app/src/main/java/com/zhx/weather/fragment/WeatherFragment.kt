@@ -1,31 +1,43 @@
 package com.zhx.weather.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.zhx.weather.MainActivity
 import com.zhx.weather.R
+import com.zhx.weather.activity.AddressManagerActivity
 import com.zhx.weather.base.BaseFragment
 import com.zhx.weather.bean.DynamicWeatherBean
+import com.zhx.weather.common.MSG_REFRESH_ADDRESS
 import com.zhx.weather.common.MSG_WEATHER_TYPE_CHANGE
 import com.zhx.weather.dynamic.*
+import com.zhx.weather.manager.UserInfoManager
 import com.zhx.weather.other.WeatherPageTransformer
+import kotlinx.android.synthetic.main.fragment_city_weather.*
+import kotlinx.android.synthetic.main.fragment_city_weather.view.*
+import kotlinx.android.synthetic.main.fragment_city_weather.view.refreshLayout
 import kotlinx.android.synthetic.main.fragment_weather.*
+import org.jetbrains.anko.support.v4.runOnUiThread
+import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
 import java.util.ArrayList
 
 /**
  * 描述：显示天气Fg的承载Fg
  */
 class WeatherFragment : BaseFragment() {
+
     companion object {
         fun newInstance(): WeatherFragment {
             return WeatherFragment()
         }
     }
 
-    private var mCityTitleList = listOf("余江", "宝山区")
+    private var mCityTitleList = UserInfoManager.INSTANCE.getAddressList()
     private lateinit var mVpAdapter: CityWeatherViewPagerAdapter
     private val mCityFgList = ArrayList<CityWeatherFragment>()
     override fun getLayoutResOrView() = R.layout.fragment_weather
@@ -35,16 +47,17 @@ class WeatherFragment : BaseFragment() {
     }
 
     override fun initUi(savedInstanceState: Bundle?) {
+        initToolbar()
         initVP()
+
+        val activity = activity as MainActivity
+        activity.initDrawer(toolbar)
     }
 
-    override fun getClickView(): List<View?>? {
-        return listOf()
-    }
-
-    override fun onSingleClick(view: View) {
+    override fun initListener() {
 
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -65,9 +78,36 @@ class WeatherFragment : BaseFragment() {
         super.onMessageBus(code, event)
         if (code == MSG_WEATHER_TYPE_CHANGE){
             event?.let {
-
                 showDynamicWeather(it as DynamicWeatherBean)
             }
+        }
+        if (code == MSG_REFRESH_ADDRESS){
+//            mCityFgList.clear()
+//            mCityTitleList.clear()
+//            val addressData  =UserInfoManager.INSTANCE.getAddressList()
+//            for (item in addressData){
+//                mCityTitleList.add(item)
+//                mCityFgList.add(CityWeatherFragment.newInstance(item))
+//            }
+//            mVpAdapter.fgList = mCityFgList
+//            mVpAdapter.notifyDataSetChanged()
+        }
+    }
+    private fun initToolbar(){
+        toolbar.inflateMenu(R.menu.menu_weather)
+        toolbar.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.menu_share ->{
+                    toast("点击分享")
+                }
+                R.id.menu_city_manage ->{
+                    startActivity<AddressManagerActivity>()
+                }
+                R.id.menu_preview ->{
+                    toast("点击体验各种天气")
+                }
+            }
+            return@setOnMenuItemClickListener false
         }
     }
     private fun initVP() {
@@ -76,7 +116,7 @@ class WeatherFragment : BaseFragment() {
         }
         mVpAdapter = CityWeatherViewPagerAdapter(childFragmentManager, mCityFgList)
         vp_city_weather.setPageTransformer(true, WeatherPageTransformer())
-        vp_city_weather.offscreenPageLimit = mCityTitleList.size
+        vp_city_weather.offscreenPageLimit = mCityTitleList!!.size
         vp_city_weather.adapter = mVpAdapter
         vp_indicator.setViewPager(vp_city_weather)
         vp_city_weather.currentItem = 0
@@ -84,7 +124,7 @@ class WeatherFragment : BaseFragment() {
 
     internal inner class CityWeatherViewPagerAdapter(
         fgManager: FragmentManager,
-        private val fgList: ArrayList<CityWeatherFragment>
+         var fgList: ArrayList<CityWeatherFragment>
     ) : FragmentPagerAdapter(fgManager) {
         override fun getItem(position: Int): Fragment {
             return fgList[position]

@@ -2,22 +2,35 @@ package com.zhx.weather
 
 import android.Manifest
 import android.os.Bundle
+import android.os.UserManager
 import android.util.Log
+import android.view.Gravity
 import android.view.View
-import com.amap.api.location.AMapLocationClient
-import com.amap.api.location.AMapLocationClientOption
-import com.amap.api.location.AMapLocationListener
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import com.zhx.weather.activity.LoginActivity
+import com.zhx.weather.adapter.DrawerItemAdapter
 import com.zhx.weather.base.BaseActivity
 import com.zhx.weather.base.BaseFragment
 import com.zhx.weather.base.MessageBus
+import com.zhx.weather.bean.DrawerBean
 import com.zhx.weather.common.MSG_LOCATION
+import com.zhx.weather.common.MSG_LOGIN_SUCCESS
 import com.zhx.weather.fragment.WeatherFragment
-import com.zhx.weather.util.myToast
+import com.zhx.weather.manager.UserInfoManager
+import com.zhx.weather.util.*
+import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.startActivity
 
 /**
  * 主Activity
  */
 class MainActivity : BaseActivity() {
+
+
     /**
      * 当前显示的Fg
      */
@@ -26,26 +39,45 @@ class MainActivity : BaseActivity() {
      * 天气Fg
      */
     private var mWeatherFg: BaseFragment? = null
-    /**
-     * 高德定位SDK创建单次定位客户端
-     */
-    private var locationClientSingle: AMapLocationClient? = null
 
+    private var mDrawerToggle: ActionBarDrawerToggle? = null
+    private var mDrawerItemAdapter: DrawerItemAdapter? = null
+    private var mDrawerItemData = mutableListOf<DrawerBean>()
     override fun getLayoutResOrView() = R.layout.activity_main
     override fun initData() {
-        getLocation()
+
     }
 
     override fun initUi(savedInstanceState: Bundle?) {
         setFragment()
+        initDrawerRv()
+        if(UserInfoManager.INSTANCE.isLogin()){
+            userLoginChange()
+        }
     }
 
-    override fun getClickView(): List<View?>? {
-        return listOf()
+    override fun initListener() {
+        tv_phone.setOnClickListener {
+            //登录
+            startActivity<LoginActivity>()
+        }
     }
 
-    override fun onSingleClick(view: View) {
+    override fun onMessageBus(code: Int, event: Any?) {
+        super.onMessageBus(code, event)
+        if (code == MSG_LOGIN_SUCCESS) {
+            userLoginChange()
+        }
+    }
 
+    /**
+     * 用户登录的改变
+     */
+    private fun userLoginChange() {
+        iv_header setImageFromR R.drawable.icon_login_header
+        tv_phone textFrom UserInfoManager.INSTANCE.getUserId()
+        iv_header.isClickable = false
+        tv_phone.isClickable = false
     }
 
     private fun setFragment() {
@@ -61,54 +93,66 @@ class MainActivity : BaseActivity() {
         }.commit()
     }
 
-    /**
-     * 获取当前位置
-     */
-    private fun getLocation() {
-        getPermission(
-            mutableListOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-        ) { granted, checked ->
-            if (granted) {
-                startSingleLocation()
+    fun initDrawer(toolbar: Toolbar?) {
+        toolbar?.let {
+            mDrawerToggle = object :
+                ActionBarDrawerToggle(this, drawer_layout, it, R.string.open, R.string.close) {
+                override fun onDrawerOpened(drawerView: View) {
+                    super.onDrawerOpened(drawerView)
+                }
+
+                override fun onDrawerClosed(drawerView: View) {
+                    super.onDrawerClosed(drawerView)
+                }
+            }
+            mDrawerToggle?.syncState()
+            drawer_layout.addDrawerListener(mDrawerToggle!!)
+        }
+
+    }
+
+    private fun showDrawerLayout() {
+        if (!drawer_layout.isDrawerOpen(Gravity.LEFT)) {
+            drawer_layout.openDrawer(Gravity.LEFT)
+        } else {
+            drawer_layout.closeDrawer(Gravity.LEFT)
+        }
+    }
+
+    private fun initDrawerRv() {
+        iv_bg setImageFromNet "https://resources.ninghao.org/images/keyclack.jpg"
+
+        initDrawerRvData()
+        mDrawerItemAdapter = DrawerItemAdapter(this, mDrawerItemData)
+        rv_drawer_item.adapter = mDrawerItemAdapter
+        rv_drawer_item.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun initDrawerRvData() {
+        val search = DrawerBean(R.drawable.ic_search, "查找")
+        val setting = DrawerBean(R.drawable.ic_settings, "设置")
+        mDrawerItemData.add(search)
+        mDrawerItemData.add(setting)
+    }
+
+
+
+
+
+    override fun onBackPressed() {
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+        } else {
+            if (!DoubleClickExit.check()) {
+                Snackbar.make(
+                    this@MainActivity.window.decorView.findViewById(android.R.id.content),
+                    "再按一次退出 App!",
+                    Snackbar.LENGTH_SHORT
+                ).show()
             } else {
-                myToast("拒绝定位权限")
+                super.onBackPressed()
+                System.exit(0)
             }
-        }
-    }
-
-    /**
-     * 启动单次客户端定位
-     */
-    private fun startSingleLocation() {
-        if (null == locationClientSingle) {
-            locationClientSingle = AMapLocationClient(this@MainActivity)
-        }
-        val locationClientOption = AMapLocationClientOption()
-        //使用单次定位
-        locationClientOption.isOnceLocation = true
-        // 地址信息
-        locationClientOption.isNeedAddress = true
-        locationClientOption.isLocationCacheEnable = false
-        locationClientSingle?.setLocationOption(locationClientOption)
-        locationClientSingle?.setLocationListener(locationSingleListener)
-        locationClientSingle?.startLocation()
-    }
-
-    /**
-     * 单次客户端的定位监听
-     */
-    private var locationSingleListener: AMapLocationListener = AMapLocationListener { location ->
-        location?.let{
-            Log.d("jiaBing", "定位结束${location.district}")
-            var district = location.district
-            if (district.isEmpty()) {
-                district = "定位失败"
-            }
-            myToast("定位成功--$district")
-            MessageBus.post(MSG_LOCATION, district)
         }
     }
 }
