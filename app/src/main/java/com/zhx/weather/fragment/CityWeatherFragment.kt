@@ -14,10 +14,12 @@ import com.zhx.weather.bean.DynamicWeatherBean
 import com.zhx.weather.bean.ForecastWeatherBean
 import com.zhx.weather.bean.LifestyBean
 import com.zhx.weather.bean.NowWeatherBean
+import com.zhx.weather.common.MSG_SPEAK
 import com.zhx.weather.common.MSG_WEATHER_TYPE_CHANGE
 import com.zhx.weather.net.getLifestyle
 import com.zhx.weather.net.getWeatherForecast
 import com.zhx.weather.net.getWeatherNow
+import com.zhx.weather.util.TTSManager
 import com.zhx.weather.util.myToast
 import com.zhx.weather.util.textFrom
 import kotlinx.android.synthetic.main.fragment_city_weather.*
@@ -40,6 +42,10 @@ class CityWeatherFragment(private val cityName: String) :
     private lateinit var mForecastAdapter: ForecastAdapter
     private var mForecastData =
         mutableListOf<ForecastWeatherBean.HeWeather6Bean.DailyForecastBean>()
+    /**
+     * 当前天气
+     */
+    private var mNowWeatherBean :NowWeatherBean.HeWeather6Bean?=null
     private lateinit var mLifestyleAdapter : LifestyleAdapter
     private var mLifestyleData =
         mutableListOf<LifestyBean.HeWeather6Bean.LifestyleBean>()
@@ -84,6 +90,12 @@ class CityWeatherFragment(private val cityName: String) :
 
     }
 
+    override fun onMessageBus(code: Int, event: Any?) {
+        super.onMessageBus(code, event)
+        if (code == MSG_SPEAK && cityName ==event) {
+            TTSManager.getInstance(activity, "xiaoyu", "30").speak(speak(), null)
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
     }
@@ -97,6 +109,7 @@ class CityWeatherFragment(private val cityName: String) :
     private fun getNowWeather() {
         //获取当前实时天气
         cityName.getWeatherNow(successCallback = { now ->
+            mNowWeatherBean =now.heWeather6[0]
             showWeatherInfoNow(now.heWeather6[0].now)
             //获取3天内预报
             getForecastWeather(now.heWeather6[0].now.cond_code)
@@ -158,5 +171,34 @@ class CityWeatherFragment(private val cityName: String) :
         mLifestyleAdapter = LifestyleAdapter(activity!!,mLifestyleData)
         rv_lifestyle.layoutManager =GridLayoutManager(activity!!,4)
         rv_lifestyle.adapter = mLifestyleAdapter
+    }
+    private fun speak():String?{
+        var m:String?=null
+        mNowWeatherBean?.let {
+            val message = StringBuffer()
+            message.append("${getString(R.string.app_name)}为您播报：")
+            message.append("\r\n")
+            message.append(cityName)
+            message.append("天气：")
+            message.append("\r\n")
+            message.append(it.update.loc)
+            message.append(" 发布：")
+            message.append("\r\n")
+            message.append(it.now.cond_txt)
+            message.append("，")
+            message.append("当前温度：")
+            message.append(it.now.tmp).append("℃")
+            message.append("。")
+            message.append("。")
+            message.append("\r\n")
+            message.append("明天：")
+            message.append(mForecastData[1].cond_txt_d)
+            message.append("，")
+            message.append(mForecastData[1].tmp_min).append("℃-")
+            message.append(mForecastData[1].tmp_max).append("℃")
+            message.append("。")
+            m =message.toString()
+        }
+        return m
     }
 }

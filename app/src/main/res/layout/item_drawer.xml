@@ -7,11 +7,12 @@
     android:layout_height="50dp">
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="15dp"
         android:src="@drawable/ic_settings"/>
     <TextView
         android:id="@+id/tv_title"
@@ -22,7 +23,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:gravity="center"
-        android:textColor="@android:color/black"
-        android:textSize="25sp"
+        android:textColor="#333333"
+        android:textSize="20sp"
         tools:text="查找城市"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#dddddd"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

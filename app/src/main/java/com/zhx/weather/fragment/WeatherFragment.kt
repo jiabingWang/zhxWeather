@@ -1,9 +1,12 @@
 package com.zhx.weather.fragment
 
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -11,12 +14,15 @@ import com.zhx.weather.MainActivity
 import com.zhx.weather.R
 import com.zhx.weather.activity.AddressManagerActivity
 import com.zhx.weather.base.BaseFragment
+import com.zhx.weather.base.MessageBus
 import com.zhx.weather.bean.DynamicWeatherBean
 import com.zhx.weather.common.MSG_REFRESH_ADDRESS
+import com.zhx.weather.common.MSG_SPEAK
 import com.zhx.weather.common.MSG_WEATHER_TYPE_CHANGE
 import com.zhx.weather.dynamic.*
 import com.zhx.weather.manager.UserInfoManager
 import com.zhx.weather.other.WeatherPageTransformer
+import com.zhx.weather.util.TTSManager
 import kotlinx.android.synthetic.main.fragment_city_weather.*
 import kotlinx.android.synthetic.main.fragment_city_weather.view.*
 import kotlinx.android.synthetic.main.fragment_city_weather.view.refreshLayout
@@ -55,7 +61,14 @@ class WeatherFragment : BaseFragment() {
     }
 
     override fun initListener() {
+        floating_action_button.setOnClickListener{
+            if(UserInfoManager.INSTANCE.isLogin()){
+                MessageBus.post(MSG_SPEAK,mCityTitleList.toMutableList()[vp_city_weather.currentItem])
+            }else{
+                toast("请先登录")
+            }
 
+        }
     }
 
 
@@ -92,24 +105,40 @@ class WeatherFragment : BaseFragment() {
 //            mVpAdapter.fgList = mCityFgList
 //            mVpAdapter.notifyDataSetChanged()
         }
+
     }
     private fun initToolbar(){
         toolbar.inflateMenu(R.menu.menu_weather)
         toolbar.setOnMenuItemClickListener {
             when(it.itemId){
                 R.id.menu_share ->{
-                    toast("点击分享")
+                    shareWeather("测试分享,内容待定")
                 }
                 R.id.menu_city_manage ->{
                     startActivity<AddressManagerActivity>()
                 }
                 R.id.menu_preview ->{
-                    toast("点击体验各种天气")
+                    if(UserInfoManager.INSTANCE.isLogin()){
+                        experienceDynamicWeather()
+                    }else{
+                        toast("请先登录")
+                    }
                 }
             }
             return@setOnMenuItemClickListener false
         }
     }
+
+    private fun shareWeather(content:String) {
+        val shareText = "\n$content\n\t\t\t  - 来看天气的分享"
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_SUBJECT, "分享")
+        intent.putExtra(Intent.EXTRA_TEXT, shareText)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(Intent.createChooser(intent, "分享"))
+    }
+
     private fun initVP() {
         for (fg in mCityTitleList) {
             mCityFgList.add(CityWeatherFragment.newInstance(fg))
@@ -144,6 +173,129 @@ class WeatherFragment : BaseFragment() {
         }
     }
 
+    /**
+     *  体验隔着动画天气
+     */
+    private fun experienceDynamicWeather(){
+        val builder = AlertDialog.Builder(activity!!)
+        builder.setIcon(android.R.drawable.ic_dialog_info)
+        builder.setTitle("请选择动画类型")
+        val items = arrayOf(
+            "晴（白天）",
+            "晴（晚上）",
+            "多云",
+            "阴",
+            "雨",
+            "雨夹雪",
+            "雪",
+            "冰雹",
+            "雾",
+            "雾霾",
+            "沙城暴"
+        )
+        builder.setSingleChoiceItems(items, -1
+        ) { dialog, which ->
+            var weatherCode =100
+            var sunrise = "06:50"
+            var sunset = "17:16"
+            var moonrise ="13:16"
+            var moonset = "00:15"
+            when (which) {
+                0 -> {
+                    //晴（白天）
+                    weatherCode =100
+                    sunrise = "00:00"
+                    sunset = "23:59"
+                    moonrise ="00:00"
+                    moonset = "00:00"
+                }
+                1 -> {
+                    //晴（晚上）
+                    weatherCode =100
+                    sunrise = "00:00"
+                    sunset ="00:00"
+                    moonrise ="00:00"
+                    moonset = "23:59"
+                }
+                2 -> {
+                    //多云
+                    weatherCode =101
+                    sunrise = "06:50"
+                    sunset = "17:16"
+                    moonrise ="13:16"
+                    moonset = "00:15"
+                }
+                3 -> {
+                    //阴
+                    weatherCode =104
+                    sunrise = "06:50"
+                    sunset = "17:16"
+                    moonrise ="13:16"
+                    moonset = "00:15"
+                }
+                4 -> {
+                    //雨
+                    weatherCode =300
+                    sunrise = "06:50"
+                    sunset = "17:16"
+                    moonrise ="13:16"
+                    moonset = "00:15"
+                }
+                5 -> {
+                    //雨夹雪
+                    weatherCode =302
+                    sunrise = "06:50"
+                    sunset = "17:16"
+                    moonrise ="13:16"
+                    moonset = "00:15"
+                }
+                6 -> {
+                    //雪
+                    weatherCode =302
+                    sunrise = "06:50"
+                    sunset = "17:16"
+                    moonrise ="13:16"
+                    moonset = "00:15"
+                }
+                7 -> {
+                    //冰雹
+                    weatherCode =304
+                    sunrise = "06:50"
+                    sunset = "17:16"
+                    moonrise ="13:16"
+                    moonset = "00:15"
+                }
+                8 -> {
+                    //雾
+                    weatherCode =500
+                    sunrise = "06:50"
+                    sunset = "17:16"
+                    moonrise ="13:16"
+                    moonset = "00:15"
+                }
+                9 -> {
+                    //雾霾
+                    weatherCode =502
+                    sunrise = "06:50"
+                    sunset = "17:16"
+                    moonrise ="13:16"
+                    moonset = "00:15"
+                }
+                10 -> {
+                    //沙城暴
+                    weatherCode =209
+                    sunrise = "06:50"
+                    sunset = "17:16"
+                    moonrise ="13:16"
+                    moonset = "00:15"
+                }
+            }
+            val typeBean = DynamicWeatherBean(weatherCode,sunrise,sunset,moonrise,moonset)
+            showDynamicWeather(typeBean)
+            dialog.dismiss()
+        }
+        builder.show()
+    }
     /**
      * 显示动态天气
      * tip ：接口返回字段为condCode，代码中命名为weatherCode。代表的意思都是天气状况代码

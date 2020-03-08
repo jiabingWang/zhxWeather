@@ -44,6 +44,16 @@ class UserInfoManager {
     fun setAddressList(data :MutableSet<String>){
         WeatherApp.app.spSet("address",data)
     }
+
+    /**
+     *  设置语音播报口语
+     */
+    fun setVoiceName(voiceName :String){
+        WeatherApp.app.spSet("voiceName",voiceName)
+    }
+    fun getVoiceName():String{
+        return WeatherApp.app.spGet("voiceName", "xiaoyu")
+    }
     fun isLogin(): Boolean {
         return !TextUtils.isEmpty(getUserId())
     }
@@ -51,8 +61,6 @@ class UserInfoManager {
     fun isNotLogin():Boolean {
         return !isLogin()
     }
-
-
 
     //清空用户信息
     fun cleanUserInfo() {

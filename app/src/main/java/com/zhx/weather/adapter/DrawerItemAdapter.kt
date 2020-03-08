@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseViewHolder
 import com.zhx.weather.R
 import com.zhx.weather.bean.DrawerBean
 import com.zhx.weather.util.setImageFromR
@@ -17,24 +19,15 @@ import com.zhx.weather.util.textFrom
  * 包名 com.zhx.weather.adapter
  * 描述：
  */
-class DrawerItemAdapter(private val context: Context, var data :MutableList<DrawerBean>):RecyclerView.Adapter<DrawerItemAdapter.DrawerItemViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrawerItemViewHolder {
-        return DrawerItemViewHolder(View.inflate(context,R.layout.item_drawer,null))
+class DrawerItemAdapter(private val context: Context, var list :MutableList<DrawerBean>):BaseQuickAdapter
+<DrawerBean,BaseViewHolder>(R.layout.item_drawer,list) {
+    override fun convert(helper: BaseViewHolder?, item: DrawerBean) {
+        val icon = helper!!.getView<ImageView>(R.id.iv_icon)
+        val title = helper!!.getView<TextView>(R.id.tv_title)
+        icon setImageFromR item.icon
+        title textFrom item.title
     }
 
-    override fun getItemCount(): Int {
-        return data.size
-    }
-
-    override fun onBindViewHolder(holder: DrawerItemViewHolder, position: Int) {
-        holder.icon setImageFromR  data[position].icon
-        holder.title textFrom data[position].title
-    }
-
-    inner class DrawerItemViewHolder(itemView :View) :RecyclerView.ViewHolder(itemView){
-        val icon = itemView.findViewById<ImageView>(R.id.iv_icon)
-        val title = itemView.findViewById<TextView>(R.id.tv_title)
-    }
 
 
 }

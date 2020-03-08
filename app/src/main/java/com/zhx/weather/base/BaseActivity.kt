@@ -1,6 +1,9 @@
 package com.zhx.weather.base
 
+import android.app.Activity
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -36,7 +39,14 @@ abstract class BaseActivity : AppCompatActivity(), MessageBusInterface, NormalIn
         ScreenAdaptation.setCustomDensity(this, application)
         super.onCreate(savedInstanceState)
         setContentView(getLayoutResOrView())
-        setTranslucentStatus()
+        if (Build.VERSION.SDK_INT >= 21) {
+            val decorView = window.decorView
+            decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            window.statusBarColor = Color.TRANSPARENT
+        }
+//        setTranslucentStatus()
+//        isStatusBarBlackTextColor(true)
         //消息总线注册
         MessageBus.register(this)
         initUi(savedInstanceState)
@@ -123,8 +133,22 @@ abstract class BaseActivity : AppCompatActivity(), MessageBusInterface, NormalIn
      */
     private fun setTranslucentStatus() {
         val lp = window.attributes
-        val flagTranslucentStatus = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+        val flagTranslucentStatus = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
         lp.flags = flagTranslucentStatus
         window.attributes = lp
+    }
+    /**
+     * 状态栏文字颜色，只有白色和黑色
+     */
+    private fun isStatusBarBlackTextColor(isDark: Boolean) {
+        if (isDark) {
+            //状态栏文字黑色
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        } else {
+            //系统默认，状态栏文字白色
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE//白色
+        }
     }
 }
