@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.FeedBackActivity">
+    <com.hjq.bar.TitleBar
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="意见反馈"/>
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_feed_back"
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        app:layout_constraintTop_toBottomOf="@id/titleBar"
+        android:layout_margin="15dp"
+        android:background="@android:color/white"
+        android:gravity="left|top"
+        android:hint="请留下您遇到的问题或者对我们的优化建议，以便我们为您提供更好的服务…"
+        android:imeOptions="actionNext"
+        android:maxLength="200"
+        android:padding="10dp"
+        android:textColor="#CCCCCC"
+        android:textColorHint="#BCBCBC"
+        android:textSize="14sp" />
+    <TextView
+        android:id="@+id/tv_apply"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/flower_shape_blue4"
+        app:layout_constraintTop_toBottomOf="@id/et_feed_back"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="提交"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:gravity="center"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -38,6 +38,20 @@ fun setStatusBarColor(activity: Activity,@ColorInt color: Int = Color.WHITE) {
         }
     }
 }
+/**
+ * 状态栏文字颜色，只有白色和黑色
+ */
+fun Activity.isStatusBarBlackTextColor(isDark: Boolean) {
+    if (isDark) {
+        //状态栏文字黑色
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+    } else {
+        //系统默认，状态栏文字白色
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE//白色
+    }
+}
 /////////////////////////////////////////////////////////////////////////////////////////
 //** EditText设置字体大小和内容
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -13,7 +13,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.zhx.weather.activity.AboutUsActivity
+import com.zhx.weather.activity.FeedBackActivity
 import com.zhx.weather.activity.LoginActivity
+import com.zhx.weather.activity.SearchWeatherActivity
 import com.zhx.weather.base.BaseActivity
 import com.zhx.weather.base.BaseFragment
 import com.zhx.weather.common.MSG_LOGIN_SUCCESS
@@ -60,25 +63,29 @@ class MainActivity : BaseActivity() {
         nav_menu.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_search -> {
-                    toast("查询城市天气")
+                    startActivity<SearchWeatherActivity>()
                 }
                 R.id.nav_calendar -> {
                     toast("万年历")
-                }
-                R.id.nav_switch -> {
-                    toast("切换城市")
-                }
-                R.id.nav_news -> {
-                    toast("厕所刷刷刷")
                 }
                 R.id.nav_set -> {
                     setVoiceName()
                 }
                 R.id.nav_about -> {
-                    toast("登录")
+                    if (UserInfoManager.INSTANCE.isLogin()){
+                        toast("您已登录")
+                    }else{
+                        startActivity<LoginActivity>()
+                    }
                 }
                 R.id.nav_clock -> {
                     toast("天气闹钟")
+                }
+                R.id.nav_feedback -> {
+                    startActivity<FeedBackActivity>()
+                }
+                R.id.nav_about_us -> {
+                    startActivity<AboutUsActivity>()
                 }
             }
             drawer_layout.closeDrawers()
@@ -145,7 +152,7 @@ class MainActivity : BaseActivity() {
     }
 
 
-    private fun setVoiceName(){
+    private fun setVoiceName() {
         var voiceName = "xiaoyu"
         val builder = AlertDialog.Builder(this)
         builder.setIcon(android.R.drawable.ic_dialog_info)
@@ -163,7 +170,8 @@ class MainActivity : BaseActivity() {
             "楠楠(童年女声)",
             "老孙(老年男声)"
         )
-        builder.setSingleChoiceItems(items, -1
+        builder.setSingleChoiceItems(
+            items, -1
         ) { dialog, which ->
             //which指的是用户选择的条目的下标
             //dialog:触发这个方法的对话框
@@ -189,6 +197,7 @@ class MainActivity : BaseActivity() {
         }
         builder.show()
     }
+
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
