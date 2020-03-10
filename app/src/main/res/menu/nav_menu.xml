@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/nav_search"
+            android:title="查询城市天气" />
+        <itemitem
+            android:id="@+id/nav_calendar"
+            android:icon="@drawable/nav_task"
+            android:title="万年历" />
+        <item
+            android:id="@+id/nav_set"
+            android:icon="@drawable/nav_setting"
+            android:title="设置发音人" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/nav_login"
+            android:title="登录"
+            />
+        <item
+            android:id="@+id/nav_clock"
+            android:icon="@drawable/nav_alarm"
+            android:title="天气闹钟"
+            />
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/nav_feedback"
+            android:title="意见反馈"
+            />
+        <item
+            android:id="@+id/nav_about_us"
+            android:icon="@drawable/nav_about_us"
+            android:title="关于我们"
+            />
+    </group>
+</menu>

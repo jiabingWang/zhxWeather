@@ -1,16 +1,13 @@
 package com.zhx.weather.fragment
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.zhx.weather.MainActivity
+import com.zhx.weather.activity.MainActivity
 import com.zhx.weather.R
 import com.zhx.weather.activity.AddressManagerActivity
 import com.zhx.weather.base.BaseFragment
@@ -22,12 +19,7 @@ import com.zhx.weather.common.MSG_WEATHER_TYPE_CHANGE
 import com.zhx.weather.dynamic.*
 import com.zhx.weather.manager.UserInfoManager
 import com.zhx.weather.other.WeatherPageTransformer
-import com.zhx.weather.util.TTSManager
-import kotlinx.android.synthetic.main.fragment_city_weather.*
-import kotlinx.android.synthetic.main.fragment_city_weather.view.*
-import kotlinx.android.synthetic.main.fragment_city_weather.view.refreshLayout
 import kotlinx.android.synthetic.main.fragment_weather.*
-import org.jetbrains.anko.support.v4.runOnUiThread
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import java.util.ArrayList

@@ -1,9 +1,7 @@
-package com.zhx.weather
+package com.zhx.weather.activity
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,12 +9,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import com.zhx.weather.activity.AboutUsActivity
-import com.zhx.weather.activity.FeedBackActivity
-import com.zhx.weather.activity.LoginActivity
-import com.zhx.weather.activity.SearchWeatherActivity
+import com.zhx.weather.R
 import com.zhx.weather.base.BaseActivity
 import com.zhx.weather.base.BaseFragment
 import com.zhx.weather.common.MSG_LOGIN_SUCCESS
@@ -24,7 +18,6 @@ import com.zhx.weather.fragment.WeatherFragment
 import com.zhx.weather.manager.UserInfoManager
 import com.zhx.weather.util.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.header.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
@@ -128,7 +121,10 @@ class MainActivity : BaseActivity() {
     fun initDrawer(toolbar: Toolbar?) {
         toolbar?.let {
             mDrawerToggle = object :
-                ActionBarDrawerToggle(this, drawer_layout, it, R.string.open, R.string.close) {
+                ActionBarDrawerToggle(this, drawer_layout, it,
+                    R.string.open,
+                    R.string.close
+                ) {
                 override fun onDrawerOpened(drawerView: View) {
                     super.onDrawerOpened(drawerView)
                 }

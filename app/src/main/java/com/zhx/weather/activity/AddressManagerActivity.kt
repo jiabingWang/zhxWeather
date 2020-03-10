@@ -2,9 +2,7 @@ package com.zhx.weather.activity
 
 import android.os.Bundle
 import android.util.Log
-import androidx.core.util.rangeTo
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.smarttop.library.bean.City
 import com.smarttop.library.bean.County
 import com.smarttop.library.bean.Province
@@ -12,21 +10,15 @@ import com.smarttop.library.bean.Street
 import com.smarttop.library.widget.AddressSelector
 import com.smarttop.library.widget.BottomDialog
 import com.smarttop.library.widget.OnAddressSelectedListener
-import com.zhx.weather.MainActivity
 import com.zhx.weather.R
 import com.zhx.weather.adapter.AddressAdapter
 import com.zhx.weather.base.BaseActivity
 import com.zhx.weather.base.MessageBus
-import com.zhx.weather.bean.AddressBean
 import com.zhx.weather.common.MSG_REFRESH_ADDRESS
 import com.zhx.weather.manager.UserInfoManager
-import com.zhx.weather.util.logD
-import com.zhx.weather.util.spGet
-import com.zhx.weather.util.spSet
 import kotlinx.android.synthetic.main.activity_adress_manager.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
-import java.lang.StringBuilder
 
 class AddressManagerActivity : BaseActivity(), OnAddressSelectedListener,
     AddressSelector.OnDialogCloseListener {

@@ -1,22 +1,19 @@
-package com.zhx.weather
+package com.zhx.weather.activity
 
 import android.Manifest
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.animation.*
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
-import com.google.gson.Gson
+import com.zhx.weather.R
 import com.zhx.weather.base.BaseActivity
-import com.zhx.weather.base.MessageBus
-import com.zhx.weather.bean.AddressBean
-import com.zhx.weather.common.MSG_LOCATION
-import com.zhx.weather.common.MSG_REFRESH_ADDRESS
 import com.zhx.weather.manager.UserInfoManager
 import com.zhx.weather.util.myToast
 import com.zhx.weather.util.spGet
 import com.zhx.weather.util.spSet
+import kotlinx.android.synthetic.main.activity_splash_activity.*
 import org.jetbrains.anko.startActivity
 
 class SplashActivity : BaseActivity() {
@@ -32,12 +29,61 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun initUi(savedInstanceState: Bundle?) {
+        startAnimation()
     }
 
     override fun initListener() {
     }
 
+    private fun startAnimation(){
+        //旋转
+        val ra = RotateAnimation(
+            0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f,
+            Animation.RELATIVE_TO_SELF, 0.5f
+        )
+        ra.duration = 1000
+        ra.fillAfter = true//动画保持状态
+        //缩放
+        val sa = ScaleAnimation(
+            0f, 1f, 0f, 1f, Animation.RELATIVE_TO_SELF, 0.5f,
+            Animation.RELATIVE_TO_SELF, 0.5f
+        )
+        sa.duration = 1000
+        sa.fillAfter = true
+        //渐变
+        val aa = AlphaAnimation(0f, 1f)
+        aa.duration = 2000
+        aa.fillAfter = true
+        //动画集合
+        val set = AnimationSet(true)
+        set.addAnimation(ra)
+        set.addAnimation(sa)
+        set.addAnimation(aa)
+        //启动动画
+        cl_splash.startAnimation(set)
+        //设置动画监听
+        set.setAnimationListener(object : Animation.AnimationListener{
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
 
+            override fun onAnimationEnd(animation: Animation?) {
+                val isSplash= spGet("isSplash",false)
+                if (isSplash){
+                    startActivity<MainActivity>()
+                }else{
+                    spSet("isSplash",true)
+                    startActivity<GuideActivity>()
+                }
+                finish()
+            }
+
+            override fun onAnimationStart(animation: Animation?) {
+
+            }
+
+        })
+
+    }
     /**
      * 获取当前位置
      */
@@ -89,14 +135,8 @@ class SplashActivity : BaseActivity() {
                     //第一次打开没地址信息
                     currentAddressList.add(district)
                 }else{
-                    //有地址信息但是第一个不是当前（换地方了）
-//                    if (currentAddressList[0]!=district){
-//                        currentAddressList.removeAt(0)
-//                        currentAddressList.add(district)
-//                    }
                 }
                 UserInfoManager.INSTANCE.setAddressList(currentAddressList.toMutableSet())
-                startActivity<MainActivity>()
             }
         }
     }
