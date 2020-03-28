@@ -282,7 +282,9 @@ fun <T> Context.spGet(keyName: String, default: T): T {
         return default
     }
 }
-
+fun String.d(){
+    Log.d("jiaBing",this)
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //** SharePreference持久化相关

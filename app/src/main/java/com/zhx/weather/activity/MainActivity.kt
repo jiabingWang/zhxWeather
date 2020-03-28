@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.zhx.weather.R
 import com.zhx.weather.base.BaseActivity
 import com.zhx.weather.base.BaseFragment
+import com.zhx.weather.common.MSG_LOGIN_OUT
 import com.zhx.weather.common.MSG_LOGIN_SUCCESS
 import com.zhx.weather.fragment.WeatherFragment
 import com.zhx.weather.manager.UserInfoManager
@@ -44,7 +45,7 @@ class MainActivity : BaseActivity() {
     override fun initUi(savedInstanceState: Bundle?) {
         setFragment()
         if (UserInfoManager.INSTANCE.isLogin()) {
-            userLoginChange()
+            userLoginChange(true)
         }
     }
 
@@ -61,9 +62,7 @@ class MainActivity : BaseActivity() {
                 R.id.nav_calendar -> {
                     toast("万年历")
                 }
-                R.id.nav_set -> {
-                    setVoiceName()
-                }
+
                 R.id.nav_about -> {
                     if (UserInfoManager.INSTANCE.isLogin()){
                         toast("您已登录")
@@ -80,6 +79,10 @@ class MainActivity : BaseActivity() {
                 R.id.nav_about_us -> {
                     startActivity<AboutUsActivity>()
                 }
+                R.id.nav_set -> {
+                    startActivity<SettingActivity>()
+//                    setVoiceName()
+                }
             }
             drawer_layout.closeDrawers()
             true
@@ -89,20 +92,33 @@ class MainActivity : BaseActivity() {
     override fun onMessageBus(code: Int, event: Any?) {
         super.onMessageBus(code, event)
         if (code == MSG_LOGIN_SUCCESS) {
-            userLoginChange()
+            userLoginChange(true)
+        }
+        if (code == MSG_LOGIN_OUT){
+            userLoginChange(false)
         }
     }
 
     /**
      * 用户登录的改变
      */
-    private fun userLoginChange() {
-        val header = nav_menu.getHeaderView(0).findViewById<ImageView>(R.id.iv_header)
-        val phone = nav_menu.getHeaderView(0).findViewById<TextView>(R.id.tv_phone)
-        header setCircleImageFromNet "https://resources.ninghao.org/images/space-skull.jpg"
-        phone textFrom UserInfoManager.INSTANCE.getUserId()
-        header.isClickable = false
-        phone.isClickable = false
+    private fun userLoginChange(isLogin:Boolean) {
+        if (isLogin){
+            val header = nav_menu.getHeaderView(0).findViewById<ImageView>(R.id.iv_header)
+            val phone = nav_menu.getHeaderView(0).findViewById<TextView>(R.id.tv_phone)
+            header setCircleImageFromNet "https://resources.ninghao.org/images/space-skull.jpg"
+            phone textFrom UserInfoManager.INSTANCE.getUserId()
+            header.isClickable = false
+            phone.isClickable = false
+        }else{
+            val header = nav_menu.getHeaderView(0).findViewById<ImageView>(R.id.iv_header)
+            val phone = nav_menu.getHeaderView(0).findViewById<TextView>(R.id.tv_phone)
+            header setImageFromR R.drawable.icon_default_header
+            phone textFrom "请登录"
+            header.isClickable = true
+            phone.isClickable = true
+        }
+
     }
 
     private fun setFragment() {
@@ -148,51 +164,7 @@ class MainActivity : BaseActivity() {
     }
 
 
-    private fun setVoiceName() {
-        var voiceName = "xiaoyu"
-        val builder = AlertDialog.Builder(this)
-        builder.setIcon(android.R.drawable.ic_dialog_info)
-        builder.setTitle("请选择发音人")
-        val items = arrayOf(
-            "小燕(女普通话)",
-            "小宇(女普通话)",
-            "小梅(粤语)",
-            "小蓉(四川话)",
-            "小倩(东北话)",
-            "小坤(河南话)",
-            "小强(湖南话)",
-            "小莹(陕西话)",
-            "小新(童年男声)",
-            "楠楠(童年女声)",
-            "老孙(老年男声)"
-        )
-        builder.setSingleChoiceItems(
-            items, -1
-        ) { dialog, which ->
-            //which指的是用户选择的条目的下标
-            //dialog:触发这个方法的对话框
-            //                Toast.makeText(WeatherActivity.this, "您选择的是:"+items[which], Toast.LENGTH_SHORT).show();
-            when (which) {
-                0 -> voiceName = "xiaoyan"
-                1 -> voiceName = "xiaoyu"
-                2 -> voiceName = "xiaomei"
-                3 -> voiceName = "xiaorong"
-                4 -> voiceName = "xiaoqian"
-                5 -> voiceName = "xiaokun"
-                6 -> voiceName = "xiaoqiang"
-                7 -> voiceName = "vixying"
-                8 -> voiceName = "xiaoxin"
-                9 -> voiceName = "nannan"
-                10 -> voiceName = "vils"
-                else -> {
-                }
-            }
-            UserInfoManager.INSTANCE.setVoiceName(voiceName)
-            dialog.dismiss()
-            TTSManager.destroy()//重新选择声源后需要停止当前播报，并且为下一次能重新设置生源准备。这点很重要！！
-        }
-        builder.show()
-    }
+
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {

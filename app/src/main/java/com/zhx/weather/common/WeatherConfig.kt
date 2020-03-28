@@ -19,7 +19,8 @@ var IS_DEBUG = BuildConfig.DEBUG
 const val MSG_WEATHER_TYPE_CHANGE = 0x0010
 const val MSG_LOCATION= 0x0011
 const val MSG_LOGIN_SUCCESS= 0x0012
-const val MSG_REFRESH_ADDRESS= 0x0013
+const val MSG_LOGIN_OUT= 0x0013
+const val MSG_REFRESH_ADDRESS= 0x0014
 //播放语音
 const val MSG_SPEAK=0x0014
 /**高德Key*/

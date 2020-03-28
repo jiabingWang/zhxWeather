@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activity.GuideActivity"></activity>
+        <activity android:name=".activity.SettingActivity"></activity>
+        <activity android:name=".activity.GuideActivity" />
         <activity android:name=".activity.SearchWeatherActivity" />
         <activity android:name=".activity.FeedBackActivity" />
         <activity android:name=".activity.AboutUsActivity" />

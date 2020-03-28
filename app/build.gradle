@@ -73,9 +73,6 @@ dependencies {
     implementation "com.scwang.smartrefresh:SmartRefreshHeader:1.1.0"
     //高德定位
     implementation "com.amap.api:location:4.5.0"
-    //友盟统计
-    implementation "com.umeng.umsdk:analytics:8.0.0"
-    implementation "com.umeng.umsdk:common:2.0.0"
     //bmob
     implementation "cn.bmob.android:bmob-sdk:3.7.3-rc1"
     implementation "io.reactivex.rxjava2:rxjava:2.2.2"
@@ -93,5 +90,27 @@ dependencies {
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.35"
     //cardview
     implementation "androidx.cardview:cardview:1.0.0"
+    //科大讯飞语音SDK
     implementation files('libs/Msc.jar')
+    //友盟统计
+    implementation "com.umeng.umsdk:analytics:8.0.0"
+    implementation "com.umeng.umsdk:common:2.0.0"
+    implementation "com.umeng.umsdk:utdid:1.1.5.3"
+    implementation "com.umeng.umsdk:push:6.0.1"
+    //小米Push通道
+//    implementation "com.umeng.umsdk:xiaomi-push:3.6.17"
+//    implementation "com.umeng.umsdk:xiaomi-umengaccs:1.1.0"
+    //魅族Push通道
+//    implementation "com.umeng.umsdk:meizu-push:3.8.1"
+//    implementation "com.umeng.umsdk:meizu-umengaccs:1.0.6"
+    //华为Push通道
+//    implementation "com.umeng.umsdk:huawei-basetb:2.6.3.305"
+//    implementation "com.umeng.umsdk:huawei-pushtb:2.6.3.305"
+//    implementation"com.umeng.umsdk:huawei-umengaccs:1.2.1"
+    //Oppo Push通道
+//    implementation "com.umeng.umsdk:oppo-push:1.0.1"
+//    implementation "com.umeng.umsdk:oppo-umengaccs:1.0.3"
+    //vivo Push通道
+//    implementation "com.umeng.umsdk:vivo-push:2.3.1"
+//    implementation "com.umeng.umsdk:vivo-umengaccs:1.0.4"
 }
