@@ -1,6 +1,5 @@
 package com.zhx.weather.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -8,13 +7,12 @@ import android.text.TextWatcher
 import com.zhx.weather.R
 import com.zhx.weather.base.BaseActivity
 import com.zhx.weather.base.MessageBus
+import com.zhx.weather.bean.UserBean
 import com.zhx.weather.common.MSG_LOGIN_SUCCESS
 import com.zhx.weather.listener.KeyboardVisibilityEventListener
+import com.zhx.weather.manager.BmobDataManager
 import com.zhx.weather.manager.UserInfoManager
-import com.zhx.weather.util.setHintWithSize
-import com.zhx.weather.util.setVisibilityEventListener
-import com.zhx.weather.util.showSuccessDialog
-import com.zhx.weather.util.textAble
+import com.zhx.weather.util.*
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.toast
 
@@ -88,9 +86,15 @@ class LoginActivity : BaseActivity() {
                 toast("请填写验证码")
             }else{
                 UserInfoManager.INSTANCE.setUserId(phone)
-                showSuccessDialog("登录成功")
-                MessageBus.post(MSG_LOGIN_SUCCESS,null)
-               finish()
+                val user= UserBean(phone,"测试")
+                BmobDataManager.INSTANCE.queryUserHave(user,{
+                    toast("登录成功")
+                    MessageBus.post(MSG_LOGIN_SUCCESS,null)
+                    finish()
+                }){
+                    toast("登录失败")
+                }
+
             }
     }
     /**

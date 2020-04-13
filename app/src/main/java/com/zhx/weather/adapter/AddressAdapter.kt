@@ -19,7 +19,7 @@ import com.zhx.weather.util.textFrom
  */
 class AddressAdapter(private val context: Context, var list: List<String>,private val onDelectedItemClick:(String)->Unit) :
     BaseQuickAdapter<String,BaseViewHolder>(R.layout.item_address,list) {
-    override fun convert(helper: BaseViewHolder?, item: String?) {
+    override fun convert(helper: BaseViewHolder, item: String?) {
         val address =helper?.getView<TextView>(R.id.tv_address)!!
         val delecte =helper?.getView<TextView>(R.id.tv_delete)!!
         address textFrom item
@@ -29,13 +29,11 @@ class AddressAdapter(private val context: Context, var list: List<String>,privat
             delecte.visibility = View.VISIBLE
         }
         address?.setOnClickListener {
-//            onItemClick.invoke(item!!)
+            //            onItemClick.invoke(item!!)
         }
         delecte.setOnClickListener{
             onDelectedItemClick.invoke(item!!)
         }
     }
-
-
 
 }

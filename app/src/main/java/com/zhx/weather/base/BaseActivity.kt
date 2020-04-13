@@ -9,6 +9,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.umeng.analytics.MobclickAgent
 import com.zhx.weather.listener.MessageBusInterface
 import com.zhx.weather.listener.NormalInterface
 import com.zhx.weather.util.ScreenAdaptation
@@ -114,12 +115,12 @@ abstract class BaseActivity : AppCompatActivity(), MessageBusInterface, NormalIn
         //是否开启屏幕适配,横竖屏切换，会导致之前设置失效，这里重新设置
         ScreenAdaptation.setCustomDensity(this, application)
         super.onResume()
-//        MobclickAgent.onResume(this)
+        MobclickAgent.onResume(this)
     }
 
     override fun onPause() {
         super.onPause()
-//        MobclickAgent.onPause(this)
+        MobclickAgent.onPause(this)
     }
 
     override fun onDestroy() {

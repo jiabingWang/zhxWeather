@@ -6,10 +6,14 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import cn.bmob.v3.Bmob
+import com.didichuxing.doraemonkit.DoraemonKit
 import com.scwang.smartrefresh.header.BezierCircleHeader
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.umeng.commonsdk.UMConfigure
+import com.umeng.message.IUmengRegisterCallback
+import com.umeng.message.PushAgent
 import com.zhx.weather.net.initOkHttp
+import com.zhx.weather.util.d
 
 /**
  * 包名 com.wjb.momweather
@@ -18,6 +22,7 @@ import com.zhx.weather.net.initOkHttp
 class WeatherApp :Application() {
     val umengKey = "5e6ca9dc167edd2de2000151"
     val umengMessageSecret = "29da373e80066bf3bff56b06f9552802"
+    val bmobKey = "0096a19d37a888635effe572190c6ea8"
     companion object{
         lateinit var app: Application
     }
@@ -25,34 +30,34 @@ class WeatherApp :Application() {
         super.onCreate()
         app = this
         initOkHttp()
-//        DoraemonKit.install(this)
         //全局下拉格式
         SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, _ ->
             BezierCircleHeader(context)
         }
+        DoraemonKit.install(this)
         //第初始化bmob
-        Bmob.initialize(this, "com.zhx.weather")
+        Bmob.initialize(this, bmobKey)
         //um
         UMConfigure.init(
-            app,
-            "",
+            this,
+            umengKey,
             "android",
             UMConfigure.DEVICE_TYPE_PHONE,
             umengMessageSecret
         )
-//        val mPushAgent = PushAgent.getInstance(context)
-//        mPushAgent.resourcePackageName = BuildConfig.APPLICATION_ID
-//        //注册推送服务，每次调用register方法都会回调该接口
-//        mPushAgent.register(object : IUmengRegisterCallback {
-//            override fun onSuccess(deviceToken: String) {
-//                //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
-//                "友盟设备token为$deviceToken".d()
-//            }
-//
-//            override fun onFailure(s: String, s1: String) {
-//                "友盟设备token获取失败原因$s--$s1".d()
-//            }
-//        })
+        val mPushAgent = PushAgent.getInstance(this)
+        mPushAgent.resourcePackageName = BuildConfig.APPLICATION_ID
+        //注册推送服务，每次调用register方法都会回调该接口
+        mPushAgent.register(object : IUmengRegisterCallback {
+            override fun onSuccess(deviceToken: String) {
+                //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
+                "友盟设备token为$deviceToken".d()
+            }
+
+            override fun onFailure(s: String, s1: String) {
+                "友盟设备token获取失败原因$s--$s1".d()
+            }
+        })
 //        setAlias()
 //        //小米推送
 //        MiPushRegistar.register(this, BuildConfig.umengXiaoMiId, BuildConfig.umengXiaoMiKey)

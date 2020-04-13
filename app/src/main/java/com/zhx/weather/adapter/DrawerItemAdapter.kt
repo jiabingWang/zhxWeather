@@ -21,13 +21,10 @@ import com.zhx.weather.util.textFrom
  */
 class DrawerItemAdapter(private val context: Context, var list :MutableList<DrawerBean>):BaseQuickAdapter
 <DrawerBean,BaseViewHolder>(R.layout.item_drawer,list) {
-    override fun convert(helper: BaseViewHolder?, item: DrawerBean) {
+    override fun convert(helper: BaseViewHolder, item: DrawerBean) {
         val icon = helper!!.getView<ImageView>(R.id.iv_icon)
         val title = helper!!.getView<TextView>(R.id.tv_title)
         icon setImageFromR item.icon
         title textFrom item.title
     }
-
-
-
 }

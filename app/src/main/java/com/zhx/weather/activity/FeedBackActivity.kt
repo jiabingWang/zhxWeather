@@ -1,11 +1,10 @@
 package com.zhx.weather.activity
 
-import android.graphics.Color
 import android.os.Bundle
 import com.zhx.weather.R
 import com.zhx.weather.base.BaseActivity
+import com.zhx.weather.manager.BmobDataManager
 import com.zhx.weather.util.isStatusBarBlackTextColor
-import com.zhx.weather.util.setStatusBarColor
 import kotlinx.android.synthetic.main.activity_feed_back.*
 import org.jetbrains.anko.toast
 
@@ -27,7 +26,12 @@ class FeedBackActivity : BaseActivity() {
             if (et_feed_back.text.isNullOrEmpty()){
                 toast("请填写意见反馈")
             }else{
-                toast("提交成功")
+                BmobDataManager.INSTANCE.addFeedBack(et_feed_back.text.toString(),{
+                    toast("提交成功")
+                }){
+
+                }
+
             }
         }
     }

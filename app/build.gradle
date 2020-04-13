@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.didi.dokit'
 
 android {
     compileSdkVersion 29
@@ -113,4 +114,6 @@ dependencies {
     //vivo Push通道
 //    implementation "com.umeng.umsdk:vivo-push:2.3.1"
 //    implementation "com.umeng.umsdk:vivo-umengaccs:1.0.4"
+    debugImplementation 'com.didichuxing.doraemonkit:doraemonkit:3.0.0'
+    releaseImplementation 'com.didichuxing.doraemonkit:doraemonkit-no-op:3.0.0'
 }

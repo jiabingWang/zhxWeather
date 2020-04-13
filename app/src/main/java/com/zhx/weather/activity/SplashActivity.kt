@@ -9,10 +9,11 @@ import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
 import com.zhx.weather.R
 import com.zhx.weather.base.BaseActivity
+import com.zhx.weather.base.MessageBus
+import com.zhx.weather.common.MSG_LOGIN_SUCCESS
+import com.zhx.weather.manager.BmobDataManager
 import com.zhx.weather.manager.UserInfoManager
-import com.zhx.weather.util.myToast
-import com.zhx.weather.util.spGet
-import com.zhx.weather.util.spSet
+import com.zhx.weather.util.*
 import kotlinx.android.synthetic.main.activity_splash_activity.*
 import org.jetbrains.anko.startActivity
 
