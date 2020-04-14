@@ -30,7 +30,7 @@ class BmobDataManager {
     ) {
         userBean.save(object : SaveListener<String>() {
             override fun done(objectId: String, e: BmobException?) {
-                Log.d("jiaBing", "错误--${e?.message}")
+                Log.d("jiaBing", "addUser错误--${e?.message}")
                 if (e == null) {
                     addSuccessCallback.invoke(objectId)
                 } else {
@@ -51,6 +51,7 @@ class BmobDataManager {
         val queryUser = BmobQuery<UserBean>()
         queryUser.findObjects(object : FindListener<UserBean>() {
             override fun done(data: MutableList<UserBean>?, e: BmobException?) {
+                Log.d("jiaBing", "queryUserHave错误--${e?.message}")
                 data?.let {
                     for (item in it) {
                         if (item.phone == userBean.phone) {
@@ -74,6 +75,7 @@ class BmobDataManager {
         val feedBackBean = FeedBackBean(message)
         feedBackBean.save(object : SaveListener<String>() {
             override fun done(objectId: String, e: BmobException?) {
+
                 if (e == null) {
                     addSuccessCallback.invoke(objectId)
                 } else {

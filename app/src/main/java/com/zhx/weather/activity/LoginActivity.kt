@@ -85,10 +85,11 @@ class LoginActivity : BaseActivity() {
             if (authCode.isEmpty()){
                 toast("请填写验证码")
             }else{
-                UserInfoManager.INSTANCE.setUserId(phone)
+
                 val user= UserBean(phone,"测试")
                 BmobDataManager.INSTANCE.queryUserHave(user,{
                     toast("登录成功")
+                    UserInfoManager.INSTANCE.setUserId(phone)
                     MessageBus.post(MSG_LOGIN_SUCCESS,null)
                     finish()
                 }){
