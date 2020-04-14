@@ -9,5 +9,4 @@ import cn.bmob.v3.BmobObject
  * 包名 com.zhx.weather.bean
  * 描述：
  */
-class FeedBackBean(val message :String) :BmobObject() {
-}
+data class FeedBackBean(val message :String) :BmobObject()
