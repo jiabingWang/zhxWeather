@@ -19,6 +19,10 @@ import com.zhx.weather.fragment.WeatherFragment
 import com.zhx.weather.manager.UserInfoManager
 import com.zhx.weather.util.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
@@ -43,12 +47,18 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initUi(savedInstanceState: Bundle?) {
+
         setFragment()
         if (UserInfoManager.INSTANCE.isLogin()) {
             userLoginChange(true)
         }
-    }
 
+    }
+    suspend fun ddd(){
+        withContext(Dispatchers.Main){
+
+        }
+    }
     override fun initListener() {
         nav_menu.getHeaderView(0).findViewById<TextView>(R.id.tv_phone).setOnClickListener {
             //登录

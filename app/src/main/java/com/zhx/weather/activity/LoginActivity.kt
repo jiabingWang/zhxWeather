@@ -87,7 +87,7 @@ class LoginActivity : BaseActivity() {
             }else{
 
                 val user= UserBean(phone,"测试")
-                BmobDataManager.INSTANCE.queryUserHave(user,{
+                BmobDataManager.INSTANCE.addUser(user,{
                     toast("登录成功")
                     UserInfoManager.INSTANCE.setUserId(phone)
                     MessageBus.post(MSG_LOGIN_SUCCESS,null)
